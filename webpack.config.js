@@ -18,5 +18,6 @@ module.exports = {
        { test: /\.js$/, exclude: /node_modules/, loader: 'babel'}
      ]
   },
-  devServer: { inline: true }
+  devServer: { inline: true },
+  devtool: 'source-map'
 };
