@@ -12,5 +12,11 @@ module.exports = {
     filename: "bundle.[chunkhash].js"
   },
   plugins: [new HtmlWebpackPlugin({ template: './index.html' })],
+  module: {
+     loaders: [
+       { test: /\.json$/, loader: 'json' },
+       { test: /\.js$/, exclude: /node_modules/, loader: 'babel'}
+     ]
+  },
   devServer: { inline: true }
 };
