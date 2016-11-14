@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "clean-dist": "rimraf dist",
+    "prestart": "npm run clean-dist",
+    "start": "webpack-dev-server --content-base dist --history-api-fallback",
+    "prebuild": "npm run clean-dist",
+    "build": "webpack -p",
+    "validate": "webpack-validator webpack.config.js"
+  },
+  "author": "Robert Smol <robert.smol@stereoit.com>",
+  "dependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "html-webpack-plugin": "^2.24.1",
+    "rimraf": "^2.5.4",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2",
+    "webpack-validator": "^2.2.9"
+  }
+}
