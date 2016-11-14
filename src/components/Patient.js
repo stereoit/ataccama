@@ -1,35 +1,47 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from 'react';
+import ExpandableComponent from './ExpandableComponent';
+import DeleteButton from './DeleteButton';
+import {findPathByKey,nestedLookup,nestedDel} from '../utils';
 
-// try to search for either relatives or phones records, return those
-function findKids(patient) {
-  let relatives = patient && patient.kids && patient.kids.has_relatives && patient.kids.has_relatives.records || null
-  if (relatives) {
-    return relatives
-  }
-  let phones = patient && patient.kids && patient.kids.has_phone && patient.kids.has_phone.records || null
-  return phones
-}
 
-const Patient = ({patient}) => {
-  let patientInfo = Object.keys(patient.data).map( (key,index) => {
-    return <tr key={index}><td>{key}</td><td>{patient.data[key]}</td></tr>
+const Patient = ({patient, path, onRemove}) => {
+  let dataInfo = Object.keys(patient.data).map( key => {
+    return  <span><span style={{'fontWeight': 'bolder'}}>{key}: </span>{patient.data[key]}</span>
   })
-  let kids = findKids(patient)
+  let kidsPath = findPathByKey(patient, 'records')
+
   return (
-    <div>
-        <table className="striped responsive-table">
-          <tbody>
-              {patientInfo}
-              { kids ?
-                <tr><td>{kids.map( (kid,index) => <Patient key={index} patient={kid} /> )}</td></tr>
-              :
-                null
-              }
-          </tbody>
-        </table>
-        <hr />
-    </div>
+    <ExpandableComponent teaser={dataInfo[0]} path={path}>
+      <li className="collection-item">
+        {dataInfo.map((info,idx) => <div key={idx}>{info}</div>)}
+        <div className="right-align">
+          <DeleteButton onRemove={() => onRemove(path)} />
+        </div>
+      </li>
+      { kidsPath ?
+        <li className="collection-item">{nestedLookup(patient, kidsPath).map( (kid,index) =>
+          <Patient
+            key={index}
+            patient={kid}
+            path={path+"."+kidsPath+"."+index}
+            onRemove={onRemove}
+          />
+        )}</li>
+      :
+        null
+      }
+    </ExpandableComponent>
   )
 }
+
+Patient.propTypes = {
+  patient: PropTypes.object.isRequired,
+  // depth: PropTypes.number
+  path: PropTypes.string.isRequired
+};
+
+
+Patient.defaultProps = { path: "0" }
+
 
 export default Patient
